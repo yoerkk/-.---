@@ -1,3 +1,4 @@
+'
 #include <bits/stdc++.h>
 using namespace std;
 int n,ans;
@@ -42,3 +43,4 @@ int main(){
     cout<<ans;
     return 0;
 }
+'
