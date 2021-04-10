@@ -1,37 +1,44 @@
-## Welcome to GitHub Pages
+#include <bits/stdc++.h>
+using namespace std;
+int n,ans;
+string a[22];
+int vis [22];
 
-You can use the [editor on GitHub](https://github.com/yoerkk/yoerk.github-io/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+//关于“回溯到某点之后，自动试探下一个方向”这件事，由i和p循环自动决定，无需操作。
+void dfs(string x,int s){//带着“上一个元素”，和“目前拼接长度”传递
+    ans=max(ans,s);//所有拼接中找出最长的（每一次递归中寻找长度最大值）
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+    //回溯break之后，从下一个i（单词）开始比对（新的路径），而ans在for之前，即仍保留上一路径的最大长度，
+    //所以ans最后结果应当是所有路径，所有动作的最大长度
+    //迷宫问题我们希望保留最短路径，但是是“某一路径的”，所以每次回溯，要讲步数减1（同时修改访问标志）
+    for(int i=1;i<=n;i++){//枚举所有a[i]和x比对
+        int p=1;
+        int la=x.length(),lb=a[i].length();
+        for(int p=1;p<min(la,lb);p++){
+            if(x.substr(la-p)==a[i].substr(0,p)&&vis[i]<2){
+                vis[i]++;
+                dfs(a[i],s+lb-p);
+                vis[i]--;//注意！回溯状态要改回来
+                break;
+            }
+        }
+    }
+return;
+}
 
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/yoerkk/yoerk.github-io/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+int main(){
+    cin>>n;
+    for(int i=1;i<=n;i++)
+        cin>>a[i];
+    char t;
+    cin>>t;
+    for(int i=1;i<=n;i++){
+        if(a[i][0]==t){
+            vis[i]++;
+            dfs(a[i],a[i].length());//第一个字符串开始搜索。（有很多个可以作为第一个单词的，每个遍历）
+            vis[i]--;//注意！回溯状态要改回来
+        }
+    }
+    cout<<ans;
+    return 0;
+}
